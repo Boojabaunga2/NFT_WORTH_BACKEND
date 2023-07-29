@@ -10,22 +10,34 @@ const settings = {
 const alchemy = new Alchemy(settings);
 
 // Function to process the collection address and NFT ID
-async function Floor(collectionAddress, nftId) {
+async function Rank(collectionAddress, nftId) {
   try {
     // Print the NFT floor price for a contract
-    const floorPrice = await alchemy.nft.getFloorPrice(collectionAddress);
+    const contractMetadata = await alchemy.nft.getContractMetadata(collectionAddress);
+    console.log('contractMetadata', contractMetadata);
+    const totalSupply = contractMetadata.totalSupply;
+    const rarity = await alchemy.nft.computeRarity(collectionAddress, nftId);
+    const computeRank = (rarity, totalSupply) => {
+        let rank = 0;
+        for (const key in rarity) {
+          rank += rarity[key].prevalence;
+        }
+        rank = (rank / rarity.length) * totalSupply;
+        return rank
+    };
+    const rank = computeRank(rarity, totalSupply);
 
     // Perform additional operations with the inputs
 
     // Return the result of the processing
-    return floorPrice;
+    return rank;
   } catch (error) {
     console.error('Error:', error.message);
 
     // Handle the error and return an appropriate response
-    return { success: false,};
+    return { success: false};
   }
 }
 
 // Export the processInputs function
-module.exports = { Floor };
+module.exports = { Rank };
