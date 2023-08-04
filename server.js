@@ -34,6 +34,7 @@ const swaggerUi = require('swagger-ui-express');
 const cors = require('cors');
 const getFloorPrice = require('./api/floorprice'); // Import the processController module
 const getNftRank = require('./api/nftrank')
+const isSpam = require('./api/isSpam')
 app.use(cors());
 app.use(
     cors({
@@ -55,8 +56,18 @@ app.post('/nft-worth', async (req, res) => {
     // Call the processInputs function from the processController module
     const result = await getFloorPrice.Floor(collectionAddress, nftId);
     const rank = await getNftRank.Rank(collectionAddress, nftId)
+    const spam= await isSpam.isSpam(collectionAddress)
+
     // Send the result as the response
-    res.json({result,rank});
+    res.json({
+      
+      "floorprice" :result,
+      
+      "nftRank":rank.rank,
+      "spamornot":spam,
+      "totalsupply":rank.totalsupply
+    
+    });
   } catch (error) {
     // Handle any errors that might occur during the process
     console.error(error);

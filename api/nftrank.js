@@ -30,7 +30,11 @@ async function Rank(collectionAddress, nftId) {
     // Perform additional operations with the inputs
 
     // Return the result of the processing
-    return rank;
+    return {
+      "totalsupply":totalSupply,
+      "rank" : rank
+
+    };
   } catch (error) {
     console.error('Error:', error.message);
 
