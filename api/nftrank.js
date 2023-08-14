@@ -17,6 +17,7 @@ async function Rank(collectionAddress, nftId) {
     console.log('contractMetadata', contractMetadata);
     const totalSupply = contractMetadata.totalSupply;
     const rarity = await alchemy.nft.computeRarity(collectionAddress, nftId);
+    console.log(rarity)
     const computeRank = (rarity, totalSupply) => {
         let rank = 0;
         for (const key in rarity) {

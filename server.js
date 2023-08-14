@@ -26,6 +26,11 @@
  *                 success:
  *                   type: boolean
  */
+
+// const soldOut=require("./api/soldout")
+// const getMentions = require ("./api/twitter")
+// const noTransactions = require("./api/noTransactions-etherscan")
+
 const express = require('express');
 const app = express();
 const bodyParser = require('body-parser');
@@ -35,6 +40,9 @@ const cors = require('cors');
 const getFloorPrice = require('./api/floorprice'); // Import the processController module
 const getNftRank = require('./api/nftrank')
 const isSpam = require('./api/isSpam')
+const nftSales=require("./api/nftSale")
+const { getTransactionsCount } = require('./api/noTransactions');
+
 app.use(cors());
 app.use(
     cors({
@@ -51,13 +59,22 @@ app.use(bodyParser.json());
 app.post('/nft-worth', async (req, res) => {
   const collectionAddress = req.body.collectionAddress;
   const nftId = req.body.nftId;
+  // const twitterHandle = req.body.twitterHandle
+  const address = req.body.address
 
   try {
-    // Call the processInputs function from the processController module
+
+    // const soldout = await soldOut.soldOut(collectionAddress)
+    // const getMention = await getMentions.getMentions(twitterHandle)
+    // const getTransaction = await noTransactions.getTransactions(address)
+
+
     const result = await getFloorPrice.Floor(collectionAddress, nftId);
     const rank = await getNftRank.Rank(collectionAddress, nftId)
     const spam= await isSpam.isSpam(collectionAddress)
-
+    const nftSale = await nftSales.nftSale(collectionAddress,nftId)
+    const noTransaction = await getTransactionsCount(address);
+     console.log(noTransaction, "inserverjs")
     // Send the result as the response
     res.json({
       
@@ -65,7 +82,10 @@ app.post('/nft-worth', async (req, res) => {
       
       "nftRank":rank.rank,
       "spamornot":spam,
-      "totalsupply":rank.totalsupply
+      "totalsupply":rank.totalsupply,
+      "nftsales":nftSale,
+      // "Number of Time mentioned in 24 hours" : getMention,
+      "Transactions in 24 hours" : {noTransaction, address} 
     
     });
   } catch (error) {
