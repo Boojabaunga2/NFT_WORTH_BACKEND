@@ -1,5 +1,7 @@
 const { Network, Alchemy } = require('alchemy-sdk');
 require('dotenv').config();
+const sdk = require('api')('@nftport/v0#1900g1olewpx69w');
+sdk.auth(process.env.NFTPORT_API_KEY);
 
 // Optional Config object, but defaults to demo api-key and eth-mainnet.
 const settings = {
@@ -12,10 +14,18 @@ const alchemy = new Alchemy(settings);
 // Function to process the collection address and NFT ID
 async function Rank(collectionAddress, nftId) {
   try {
+    const total=await sdk.retrieveContractNfts({
+      chain: 'ethereum',
+      page_number: '1',
+      page_size: '1',
+      include: 'metadata',
+      refresh_metadata: 'false',
+      contract_address: collectionAddress
+    })
     // Print the NFT floor price for a contract
     const contractMetadata = await alchemy.nft.getContractMetadata(collectionAddress);
     console.log('contractMetadata', contractMetadata);
-    const totalSupply = contractMetadata.totalSupply;
+    const totalSupply = total.data.total
     const rarity = await alchemy.nft.computeRarity(collectionAddress, nftId);
     console.log(rarity)
     const computeRank = (rarity, totalSupply) => {

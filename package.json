@@ -20,7 +20,7 @@
   "dependencies": {
     "@quicknode/sdk": "^1.1.0",
     "alchemy-sdk": "^2.9.1",
-    "api": "^6.1.0",
+    "api": "^6.1.1",
     "axios": "^1.4.0",
     "cors": "^2.8.5",
     "dotenv": "^16.3.1",

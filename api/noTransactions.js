@@ -10,9 +10,10 @@ Moralis.start({
 
 async function getTransactionsCount(address,collectionAddress) {
   const chain = EvmChain.ETHEREUM;
-  const nftTransfers = await Moralis.EvmApi.nft.getNFTContractTransfers({
+  const nftTransfers = await Moralis.EvmApi.nft.getWalletNFTTransfers({
     address,
     chain,
+    disableTotal:false
   });
 
 

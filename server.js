@@ -42,6 +42,7 @@ const getNftRank = require('./api/nftrank')
 const isSpam = require('./api/isSpam')
 const nftSales=require("./api/nftSale")
 const { getTransactionsCount } = require('./api/noTransactions');
+const {process} = require("./api/process")
 
 app.use(cors());
 app.use(
@@ -74,10 +75,9 @@ app.post('/nft-worth', async (req, res) => {
     const spam= await isSpam.isSpam(collectionAddress)
     const nftSale = await nftSales.nftSale(collectionAddress,nftId)
     const noTransaction = await getTransactionsCount(address);
-     console.log(noTransaction, "inserverjs")
     // Send the result as the response
-    res.json({
-      
+    const data= {
+
       "floorprice" :result,
       
       "nftRank":rank.rank,
@@ -86,6 +86,15 @@ app.post('/nft-worth', async (req, res) => {
       "nftsales":nftSale,
       // "Number of Time mentioned in 24 hours" : getMention,
       "Transactions in 24 hours" : {noTransaction, address} 
+
+    }
+    const dataToProcess =await  process(data)
+    console.log(dataToProcess,"datatoprocess")
+    
+    res.json({
+      
+     valuation:dataToProcess,
+     nftRank:rank
     
     });
   } catch (error) {
